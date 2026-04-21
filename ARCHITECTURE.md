@@ -1,10 +1,10 @@
 # Operatives Architecture
 
-An Operative is a durable AI system defined by its operative files. In the live architecture, Operatives are built for GitHub Copilot in VS Code as the primary runtime, assembled from a kernel plus selected upstream layers, and delivered either as maintainer Operatives or as generated Operatives. This document describes that architecture at the system level: what the core entities are, how they relate, and how an Operative is assembled, maintained, and exported.
+An Operative is a durable AI system defined by its operative files. This document describes the intended final architecture of the system: what the core entities are, how they relate, and how an Operative is assembled, maintained, and exported. In that architecture, Operatives are built for GitHub Copilot in VS Code as the primary runtime, assembled from a kernel plus selected upstream layers, and delivered either as maintainer Operatives or as generated Operatives.
 
 ## System Hierarchy
 
-The ecosystem is organized around three primary categories: Templates, Layers, and Operatives.
+The system is organized around three primary categories: Templates, Layers, and Operatives.
 
 - Templates define reusable structural patterns.
 - Layers are concrete canonical sources instantiated from templates.
@@ -67,7 +67,7 @@ flowchart TD
 
 The kernel is the universal template for an Operative. Every Operative begins as an instance of the kernel and inherits the operative-level contract defined by `PROTOCOL` together with the adjacent routing, governance, assembly, task, and update surfaces that make that contract usable.
 
-The kernel defines the minimum shared structure of an Operative. In the live architecture, it also owns the default maintainer-governance model for maintainer Operatives.
+The kernel defines the minimum shared structure of an Operative. It also owns the default maintainer-governance model for maintainer Operatives.
 
 At the operative level, the kernel provides the required operative file family: the protected `PROTOCOL` surface together with the adjacent routing, governance, assembly, task, and update surfaces that make an Operative coherent and maintainable as a durable system.
 
@@ -90,7 +90,7 @@ The kernel also owns the baseline rules for governed source editing in maintaine
 
 `OLT` defines the shared shape of operations layers. Operations layers provide reusable procedures and task-routing canon that an Operative can invoke without treating those procedures as part of its identity.
 
-Maintainer-focused editing workflows are no longer modeled as a separate active template family in the live architecture. That governance now lives in the kernel.
+Maintainer-focused editing workflows are no longer modeled as a separate active template family. That governance now lives in the kernel.
 
 ## Operative Lifecycle
 
@@ -116,7 +116,7 @@ This yields a durable distinction between source canon, generated artifacts, and
 - Generated artifacts are reviewable projections or copies of canon and are not hand-edited as primary sources.
 - Local working state belongs in workspace control surfaces and other ephemeral execution context.
 
-In the live architecture, the active runtime target is GitHub Copilot. The assembly workflow therefore owns the normalization boundary between durable source structure and current Copilot runtime shape.
+GitHub Copilot is the primary runtime target, so the assembly workflow owns the normalization boundary between durable source structure and current Copilot runtime shape.
 
 At minimum, `assemble-operative` is responsible for:
 
@@ -135,6 +135,8 @@ At runtime, an Operative may appear in two forms.
 
 A maintainer Operative is a maintainer instance that manages a disposable Copilot runtime surface from adjacent operative-owned source surfaces and can maintain operative-local canon and edit-enabled upstream canon under kernel governance and target-specific boundaries.
 
+The maintained-source surface for a maintainer Operative lives under `.<operative-name>/`. Included layer sources live under `.<operative-name>/LAYERS/<layer-name>/`. The disposable Copilot runtime surface lives under `.github/` and is generated from the maintained source surface rather than edited as primary canon.
+
 A generated Operative is a read-only runtime produced from prebuilt artifacts. In that form, the deployed unit need not include the full Operative repo, included upstream layer repos, or `ASSEMBLY`; it only needs the runtime-facing artifacts required by the target environment.
 
 This is the live runtime distinction.
@@ -149,7 +151,7 @@ The kernel provides the default governance for maintaining an Operative's own lo
 
 Included layer repos remain canonical upstream sources. Editing those layer files is governed, not assumed globally.
 
-In the live architecture, the kernel carries the maintainer-governance model directly rather than delegating it to a separate active template family.
+The kernel carries the maintainer-governance model directly rather than delegating it to a separate active template family.
 
 That governance follows four rules.
 
@@ -174,7 +176,7 @@ Companion artifacts may support review and adoption, but canon remains authorita
 
 ## Export Model
 
-GitHub Copilot in VS Code is the only first-class live runtime target in the active architecture.
+GitHub Copilot in VS Code is the only first-class live runtime target in this architecture.
 
 Other platforms are represented as export targets rather than as equal-status runtime families.
 
